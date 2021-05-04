@@ -15,8 +15,6 @@ Plug 'junegunn/fzf.vim'
 Plug 'morhetz/gruvbox'
 "Nerdcommenter
 Plug 'scrooloose/nerdcommenter'
-"EasyMotion
-Plug 'easymotion/vim-easymotion'
 "vim-airline
 Plug 'bling/vim-airline'
 "Theme for airline
@@ -27,6 +25,8 @@ Plug 'majutsushi/tagbar'
 Plug 'jiangmiao/auto-pairs'
 "Emmet
 Plug 'mattn/emmet-vim'
+"Vim sneak for jumping around in text
+Plug 'justinmk/vim-sneak'
 "Async Lint engine
 Plug 'w0rp/ale'
 "vim tmux navigator
@@ -54,7 +54,6 @@ Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
 Plug 'steelsojka/completion-buffers'
-Plug 'aca/completion-tabnine', { 'do': './install.sh' }
 Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'nvim-treesitter/completion-treesitter'
 "Snippets
@@ -139,6 +138,40 @@ set nofoldenable        " Don't fold by default
 "set wildmode=list:longest
 set wildmenu                      " Enable ctrl-n and ctrl-p to scroll thru matches
 
+
+" ================== tree sitter config ====================
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  highlight = {
+    enable = true,
+    custom_captures = {
+      -- Highlight the @foo.bar capture group with the "Identifier" highlight group.
+      ["foo.bar"] = "Identifier",
+    },
+  },
+}
+
+require'nvim-treesitter.configs'.setup {
+  incremental_selection = {
+    enable = true,
+    keymaps = {
+      init_selection = "gnn",
+      node_incremental = "grn",
+      scope_incremental = "grc",
+      node_decremental = "grm",
+    },
+  },
+}
+
+require'nvim-treesitter.configs'.setup {
+  indent = {
+    enable = true
+  }
+}
+EOF
+set foldmethod=expr
+set foldexpr=nvim_treesitter#foldexpr()
+
 " ================ Search =======================
 
 set ignorecase
@@ -174,11 +207,7 @@ nnoremap <F1> <ESC>
 vnoremap <F1> <ESC>
 inoremap jk <ESC>
 inoremap fd <ESC>
-nnoremap <leader>e <Esc>g_<Esc>
-nnoremap <leader>q <Esc>^<Esc>
 nnoremap <leader>w <C-w>v<C-w>l
-map <leader>j ddp
-map <leader>k ddkkp
 map K li<Enter><Esc>
 nnoremap : ;
 vnoremap : ;
@@ -190,17 +219,12 @@ nmap <leader>t ;NERDTreeToggle<CR>
 nmap <leader>b ;TagbarToggle<CR>
 nmap <C-_>   <Plug>NERDCommenterToggle
 vmap <C-_>   <Plug>NERDCommenterToggle<CR>gv
-nnoremap <Leader>vp ;VimuxPromptCommand<CR>
-nnoremap <Leader>vl ;VimuxRunLastCommand<CR>
-nnoremap <Leader>vs ;VimuxRunCommand("ls")<CR>
 
 inoremap <expr> <C-j> pumvisible() ? "\<C-N>" : "\<C-j>"
 inoremap <expr> <C-k> pumvisible() ? "\<C-P>" : "\<C-k>"
 " Use <Tab> and <S-Tab> to navigate through popup menu
 inoremap <expr> <Tab>   pumvisible() ? "\<C-N>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-P>" : "\<S-Tab>"
-"nnoremap  <silent>   <tab>  :if &modifiable && !&readonly && &modified <CR> :write<CR> :endif<CR>:bnext<CR>
-"nnoremap  <silent> <s-tab>  :if &modifiable && !&readonly && &modified <CR> :write<CR> :endif<CR>:bprevious<CR>
 command Bd bp\|bd \#
 
 " ================ UltiSnips ================
@@ -220,7 +244,8 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 
 
 "=================== Completion nvim ===================
-lua require'lspconfig'.elixirls.setup{on_attach=require'completion'.on_attach}
+lua require'lspconfig'.elixirls.setup{}
+lua require'lspconfig'.pyls.setup{}
 
 " Set completeopt to have a better completion experience
 set completeopt=menuone,noinsert,noselect
@@ -231,7 +256,7 @@ let g:completion_enable_snippet = 'UltiSnips'
 
 let g:completion_chain_complete_list = {
     \ 'default': [
-    \    {'complete_items': ['lsp', 'snippet', 'tabnine','buffer','ts' ]},
+    \    {'complete_items': ['lsp', 'snippet', 'buffer', 'ts' ]},
     \    {'mode': '<c-p>'},
     \    {'mode': '<c-n>'}
     \]
@@ -245,10 +270,12 @@ let g:completion_matching_smart_case = 1
 
 set display+=lastline
 au FocusLost * :wa
+
 " autocmd VimEnter * NERDTree
 " ================= Python ===========================
 let g:python_host_prog = '/home/solaire/.virtualenvs/neovim2/bin/python'
 let g:python3_host_prog = '/home/solaire/.virtualenvs/neovim3/bin/python'
+autocmd BufWritePre *.py execute ':Black'
 " =============== Powerline Setup =====================
 set laststatus=2 " Always display the statusline in all windows
 set showtabline=2 " Always display the tabline, even if there is only one tab
@@ -273,10 +300,13 @@ let g:rainbow#pairs = [['(', ')'], ['[', ']'],['{','}']]
 let g:rainbow#blacklist = [10,226]
 au VimEnter * RainbowParentheses
 
+nnoremap <silent> <Leader>e :lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
 
+"============================ Sneak ====================
+let g:sneak#s_next = 1
+let g:sneak#use_ic_scs = 1
 
 "=============================== Elixir ========================
-lua require'lspconfig'.elixirls.setup{}
 let g:mix_format_on_save = 1
 
 " Finding stuff
