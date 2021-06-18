@@ -8,31 +8,38 @@ call plug#begin()
 
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-unimpaired'
-Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
+"indent
+Plug 'lukas-reineke/indent-blankline.nvim', {'branch': 'lua'}
+"fzf 
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
-Plug 'morhetz/gruvbox'
+Plug 'ojroques/nvim-lspfuzzy'
+
+Plug 'mhinz/vim-signify'
+Plug 'haya14busa/is.vim'
+Plug 'sainnhe/sonokai'
 Plug 'tomtom/tcomment_vim'
-Plug 'bling/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+Plug 'hoob3rt/lualine.nvim'
 Plug 'majutsushi/tagbar'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'mattn/emmet-vim'
 Plug 'justinmk/vim-sneak'
-Plug 'jmcantrell/vim-virtualenv'
 Plug 'kyazdani42/nvim-web-devicons' " for file icons
 Plug 'kyazdani42/nvim-tree.lua'
-Plug 'numirias/semshi'
 Plug 'psf/black'
-Plug 'fatih/vim-go'
+Plug 'junegunn/rainbow_parentheses.vim'
+Plug 'nvim-lua/plenary.nvim'
 "Elixir
 Plug 'elixir-editors/vim-elixir'
 Plug 'mhinz/vim-mix-format'
-Plug 'junegunn/rainbow_parentheses.vim'
 "Autocompletion
+Plug 'onsails/lspkind-nvim'
 Plug 'neovim/nvim-lspconfig'
+Plug 'folke/trouble.nvim'
+Plug 'RishabhRD/popfix'
+Plug 'RishabhRD/nvim-lsputils'
 Plug 'nvim-lua/completion-nvim'
 Plug 'steelsojka/completion-buffers'
 Plug 'nvim-treesitter/nvim-treesitter'
@@ -53,11 +60,10 @@ set hidden
 set visualbell
 set relativenumber
 set lazyredraw
-set background=dark
-let g:airline_theme = "base16"
-let g:gruvbox_contrast_dark= "hard"
-colorscheme gruvbox
+set termguicolors
 set wmh=0
+let g:sonokai_style = 'andromeda'
+colorscheme sonokai
 "Turn off swap files
 set noswapfile
 set nobackup
@@ -90,13 +96,7 @@ lua <<EOF
 require'nvim-treesitter.configs'.setup {
   highlight = {
     enable = true,
-    custom_captures = {
-      -- Highlight the @foo.bar capture group with the "Identifier" highlight group.
-      ["foo.bar"] = "Identifier",
-    },
   },
-}
-require'nvim-treesitter.configs'.setup {
   incremental_selection = {
     enable = true,
     keymaps = {
@@ -106,13 +106,22 @@ require'nvim-treesitter.configs'.setup {
       node_decremental = "grm",
     },
   },
-}
-require'nvim-treesitter.configs'.setup {
   indent = {
     enable = true
   }
 }
 require'nvim-web-devicons'.setup {}
+require('lspfuzzy').setup {}
+require('trouble').setup {}
+require('lualine').setup {options = {theme = 'material' }}
+vim.lsp.handlers['textDocument/codeAction'] = require'lsputil.codeAction'.code_action_handler
+vim.lsp.handlers['textDocument/references'] = require'lsputil.locations'.references_handler
+vim.lsp.handlers['textDocument/definition'] = require'lsputil.locations'.definition_handler
+vim.lsp.handlers['textDocument/declaration'] = require'lsputil.locations'.declaration_handler
+vim.lsp.handlers['textDocument/typeDefinition'] = require'lsputil.locations'.typeDefinition_handler
+vim.lsp.handlers['textDocument/implementation'] = require'lsputil.locations'.implementation_handler
+vim.lsp.handlers['textDocument/documentSymbol'] = require'lsputil.symbols'.document_handler
+vim.lsp.handlers['workspace/symbol'] = require'lsputil.symbols'.workspace_handler
 EOF
 set foldmethod=expr
 set foldexpr=nvim_treesitter#foldexpr()
@@ -122,12 +131,9 @@ set smartcase
 set hlsearch        " Highlight search results
 " ================ Key maps ========================
 let mapleader = " "
-"Leader maps.
-nnoremap <leader>n :noh<cr>
 nnoremap <leader>s :update<cr>
 nnoremap <leader>t :NvimTreeToggle<cr>
 nnoremap <leader>w <C-w>v<C-w>l
-nnoremap <leader>k <cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> <Leader>e :lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
 nnoremap <silent> <Leader>z :Files<CR>
 nnoremap <silent> <Leader>x :Buffers<CR>
@@ -139,14 +145,28 @@ vnoremap / /\v
 "Changelist jump
 nnoremap ]g g,
 nnoremap [g g;
+
 nnoremap j gj
 nnoremap k gk
 inoremap jk <ESC>
-"Details for item under cursor.
+
+"neorg keybndings
+
+"lsp keybindings
 nnoremap K <cmd>lua vim.lsp.buf.hover()<CR>
+nnoremap <leader>lf <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <leader>lc <cmd>lua vim.lsp.buf.declaration()<CR>
+nnoremap <leader>li <cmd>lua vim.lsp.buf.implementation()<CR>
+nnoremap <leader>lr <cmd>lua vim.lsp.buf.references()<CR>
+nnoremap <leader>lt <cmd>lua vim.lsp.buf.typeDefinition()<CR>
+nnoremap <leader>la <cmd>lua vim.lsp.buf.codeAction()<CR>
 "Swapping semicolon and colon
 noremap : ;
 noremap ; :
+inoremap : ;
+inoremap ; :
+tnoremap : ;
+tnoremap ; :
 "Use <Tab> and <S-Tab>,<C-j> <C-k> to navigate through popup menu.
 inoremap <expr> <C-j> pumvisible() ? "\<C-N>" : "\<C-j>"
 inoremap <expr> <C-k> pumvisible() ? "\<C-P>" : "\<C-k>"
@@ -165,11 +185,14 @@ tnoremap <A-t> <C-\><C-n>:call TermToggle(10)<CR>
 " Terminal go back to normal mode
 tnoremap <Esc> <C-\><C-n>
 tnoremap :q! <C-\><C-n>:q!<CR>
+
+nnoremap <BackSpace> <C-^>
 " ================ UltiSnips ================
 let g:UltiSnipsExpandTrigger = '<f5>'
 "=================== Completion nvim ===================
 lua require'lspconfig'.elixirls.setup{ cmd = { "/home/solaire/elixir-ls/language_server.sh" } }
 lua require'lspconfig'.pyright.setup{}
+lua require'lspkind'.init{}
 " Set completeopt to have a better completion experience
 set completeopt=menuone,noinsert,noselect
 " Avoid showing message extra message when using completion
@@ -194,14 +217,13 @@ autocmd BufWritePre *.py execute ':Black'
 set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
 let g:airline_powerline_fonts = 1
 " ================== Golang ===========================
-let g:go_fmt_autosave = 1
-let g:go_fmt_command = "goimports"
-let g:go_highlight_fields = 1
-let g:go_highlight_functions = 1
-let g:go_highlight_function_calls = 1
-let g:go_highlight_extra_types = 1
-let g:go_highlight_operators = 1
-let g:go_auto_type_info = 1
+" let g:go_fmt_autosave = 1
+" let g:go_highlight_fields = 1
+" let g:go_highlight_functions = 1
+" let g:go_highlight_function_calls = 1
+" let g:go_highlight_extra_types = 1
+" let g:go_highlight_operators = 1
+" let g:go_auto_type_info = 1
 "====================== Rainbow colors =============
 let g:rainbow#max_level = 16
 let g:rainbow#pairs = [['(', ')'], ['[', ']'],['{','}']]
