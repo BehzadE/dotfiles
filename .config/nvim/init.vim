@@ -1,10 +1,11 @@
-" These Settings are used by neovim. It's sourced from .vimrc for convenience.
+" These Settings are used by neovim.
 
 " Use Vim settings rather than Vi settings. Must be first, it affects other options
 set nocompatible
 set t_Co=256
 " =============== Vim Plug ===============
 call plug#begin()
+
 
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'
@@ -77,11 +78,7 @@ set smarttab
 set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 " ================ Persistent Undo ==================
 " Keep undo history across sessions, by storing in file.
-if has('persistent_undo')
-  silent !mkdir ~/.vimbackups > /dev/null 2>&1
-  set undodir=~/.vimbackups
-  set undofile
-endif
+set undofile
 " ================ Line Breaks ====================
 " Don't wrap lines physically (auto insertion of newlines)
 set nowrap       "Don't wrap lines
