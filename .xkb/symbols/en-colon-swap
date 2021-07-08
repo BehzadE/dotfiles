@@ -1,0 +1,6 @@
+default partial alphanumeric_keys
+xkb_symbols "basic" {
+    include "us"
+        name [Group1] = "EnC";
+        key <AC10> {[colon, semicolon]};
+};
