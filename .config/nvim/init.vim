@@ -1,8 +1,3 @@
-" These Settings are used by neovim.
-
-" Use Vim settings rather than Vi settings. Must be first, it affects other options
-set nocompatible
-set t_Co=256
 " =============== Vim Plug ===============
 call plug#begin()
 
@@ -51,7 +46,7 @@ Plug 'hrsh7th/vim-vsnip'
 Plug 'svermeulen/vim-cutlass'
 call plug#end()            
 "================ General ==========================
-set showcmd                     " Show incomplete commands at the bottom
+set t_Co=256
 set showmode                    " Show current mode at the bottom
 set showmatch                   " Show matching brackets and parentheses
 syntax enable                   " Syntax highlighting
@@ -73,10 +68,8 @@ let g:nvim_tree_auto_close = 1
 set clipboard+=unnamedplus
 " ================ Indentation ======================
 set smartindent
-set smarttab
 " Set softtabs with 4 spaces
 set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
-" ================ Persistent Undo ==================
 " Keep undo history across sessions, by storing in file.
 set undofile
 " ================ Line Breaks ====================
@@ -159,7 +152,6 @@ set foldexpr=nvim_treesitter#foldexpr()
 " ================ Search =======================
 set ignorecase
 set smartcase
-set hlsearch        " Highlight search results
 " ================ Key maps ========================
 let mapleader = " "
 nnoremap <leader>s <cmd>update<cr>

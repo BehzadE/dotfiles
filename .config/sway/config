@@ -231,7 +231,7 @@ gaps outer -5
 # Keyboard
 input "type:keyboard" {
     xkb_layout en-colon-swap,ir
-    xkb_options grp:alt_shift_toggle,caps:escape
+    xkb_options grp:alt_shift_toggle
 }
 
 # Status Bar:

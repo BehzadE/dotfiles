@@ -2,5 +2,10 @@ default partial alphanumeric_keys
 xkb_symbols "basic" {
     include "us"
         name [Group1] = "EnC";
-        key <AC10> {[colon, semicolon]};
+        key <AC10> { [colon, semicolon             ] };
+        key <CAPS> { [ ISO_Level3_Shift            ] };
+        key <AC06> { [ h, H , Left, Left           ] };
+        key <AC07> { [ j, J, Down, Down            ] };
+        key <AC08> { [ k, K, Up, Up                ] };
+        key <AC09> { [ l, L, Right, Right          ] };
 };
