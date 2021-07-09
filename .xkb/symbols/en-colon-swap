@@ -8,4 +8,9 @@ xkb_symbols "basic" {
         key <AC07> { [ j, J, Down, Down            ] };
         key <AC08> { [ k, K, Up, Up                ] };
         key <AC09> { [ l, L, Right, Right          ] };
+        key <AD05> { [ t, T , XF86AudioPlay, XF86AudioPlay           ] };
+        key <AD06> { [ y, Y , XF86AudioPrev, XF86AudioPrev           ] };
+        key <AD07> { [ u, U, XF86AudioLowerVolume, XF86AudioLowerVolume            ] };
+        key <AD08> { [ i, I, XF86AudioRaiseVolume, XF86AudioRaiseVolume            ] };
+        key <AD09> { [ o, O, XF86AudioNext, XF86AudioNext          ] };
 };
