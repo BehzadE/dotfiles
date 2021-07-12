@@ -7,11 +7,9 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 "indent
 Plug 'lukas-reineke/indent-blankline.nvim'
-
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
-
 Plug 'mhinz/vim-signify'
 Plug 'haya14busa/is.vim'
 Plug 'sainnhe/sonokai'
@@ -26,8 +24,8 @@ Plug 'kyazdani42/nvim-tree.lua'
 Plug 'psf/black'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'nvim-lua/plenary.nvim'
-"Go 
 Plug 'fatih/vim-go'
+Plug 'haorenW1025/floatLf-nvim'
 "Elixir
 Plug 'elixir-editors/vim-elixir'
 Plug 'mhinz/vim-mix-format'
@@ -189,8 +187,8 @@ nnoremap [g g;
 nnoremap j gj
 nnoremap k gk
 
-"neorg keybndings
-
+"to disable yanking text when pasting in visual mode
+vnoremap p "_dP
 "lspsaga keybindings
 nnoremap <silent>K <cmd>Lspsaga hover_doc<CR>
 nnoremap <silent><leader>ca <cmd>Lspsaga code_action<CR>
@@ -228,6 +226,13 @@ nnoremap <BackSpace> <C-^>
 
 inoremap jk <esc>
 inoremap fd <esc>
+
+nnoremap <A-o> :LfToggle<CR>
+nnoremap <A-i> :LfToggleCurrentBuf<CR>
+tnoremap <silent> <A-o> <C-\><C-n>:LfToggle<CR>
+"=================== lf ===========================
+let g:floatLf_border = 1
+
 "=================== Completion ===================
 " Set completeopt to have a better completion experience
 set completeopt=menuone,noselect
@@ -236,15 +241,12 @@ set shortmess+=c
 " ================= Python ===========================
 let g:python3_host_prog = '/home/solaire/.virtualenvs/neovim3/bin/python'
 autocmd BufWritePre *.py execute ':Black'
-" =============== Airline Setup =====================
 set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
-let g:airline_powerline_fonts = 1
 " ================== Golang ===========================
 let g:go_fmt_autosave = 1
 let g:go_def_mapping_enabled = 0
 let g:go_code_completion_enabled = 0
 let g:go_echo_go_info = 0
-
 "====================== Rainbow colors =============
 let g:rainbow#max_level = 16
 let g:rainbow#pairs = [['(', ')'], ['[', ']'],['{','}']]

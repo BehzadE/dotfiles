@@ -22,8 +22,8 @@ set $menu dmenu_path | dmenu | xargs swaymsg exec --
 
 ### Output configuration
 #
-# Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-output * bg /usr/share/wallpapers/arch.png fill
+# Wallpaper
+output * bg /usr/share/wallpapers/woods.jpg fill
 #
 # Example configuration:
 
@@ -177,7 +177,9 @@ exec swayidle -w \
 
     # Show the next scratchpad window or hide the focused scratchpad window.
     # If there are multiple scratchpad windows, this command cycles through them.
-    bindsym $mod+minus scratchpad show
+    bindsym $mod+minus [app_id="dropdown"] scratchpad show
+    bindsym $mod+equal [app_id="ncmpcpp"] scratchpad show
+    bindsym F12 scratchpad show
 #
 # Resizing containers:
 #
@@ -211,9 +213,9 @@ bindsym --locked XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
 bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
 bindsym --locked XF86MonBrightnessUp exec brightnessctl set +5%
 bindsym --locked XF86ScreenSaver exec ~/.config/sway/screen_toggle.sh
-bindsym --locked XF86AudioPlay exec "playerctl --player=spotify,%any play-pause"
-bindsym --locked XF86AudioNext exec "playerctl --player=spotify,%any next"
-bindsym --locked XF86AudioPrev exec "playerctl --player=spotify,%any previous"
+bindsym --locked XF86AudioPlay exec "playerctl2 play-pause"
+bindsym --locked XF86AudioNext exec "playerctl2 next"
+bindsym --locked XF86AudioPrev exec "playerctl2 previous"
 
 # Remove clutter
 default_border none
@@ -249,12 +251,15 @@ bar {
 workspace 1
 exec gammastep
 exec telegram-desktop -startintray
-exec expressvpn connect smart
+exec expressvpn connect itco
 exec mpd-mpris
-exec memory-alert.sh
+exec memory-alert
+exec mailnag
 
-exec alacritty -t dropdown
-for_window [title="dropdown"] move container to scratchpad
+exec $term -o background_opacity=0.7 --class dropdown
+for_window [app_id="dropdown"] move container to scratchpad
+exec $term -o background_opacity=0.7 --class ncmpcpp -e ncmpcpp
+for_window [app_id="ncmpcpp"] move container to scratchpad
 
 
 

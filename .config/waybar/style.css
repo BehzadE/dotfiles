@@ -75,7 +75,7 @@ window#waybar {
 #idle_inhibitor.activated {
     color: #e5d56e;
 }
-#mpd {
+#custom-mpris-media {
     color: #ef8204;
 }
 
@@ -86,7 +86,7 @@ window#waybar {
 #battery,
 #disk,
 #language,
-#mpd,
+#custom-mpris-media,
 #idle_inhibitor,
 #temperature {
 	background: #1a1a1a;

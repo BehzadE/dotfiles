@@ -18,11 +18,11 @@
 		"custom/right-arrow-dark",
 		"custom/right-arrow-light",
 		"clock#3",
-		"custom/right-arrow-dark"
+		"custom/right-arrow-dark",
 	],
 	"modules-right": [
 		"custom/left-arrow-dark",
-        "mpd",
+        "custom/mpris-media",
 		"custom/left-arrow-light",
 		"custom/left-arrow-dark",
         "idle_inhibitor",
@@ -32,9 +32,6 @@
 		"custom/left-arrow-light",
 		"custom/left-arrow-dark",
 		"pulseaudio",
-		"custom/left-arrow-light",
-		"custom/left-arrow-dark",
-		"disk",
 		"custom/left-arrow-light",
 		"custom/left-arrow-dark",
 		"memory",
@@ -125,11 +122,6 @@
 			""
 		]
 	},
-	"disk": {
-		"interval": 5,
-		"format": "Disk {percentage_used:2}%",
-		"path": "/home"
-	},
 	"tray": {
 		"icon-size": 20
 	},
@@ -144,36 +136,22 @@
             "deactivated": ""
         }
     },
-    "mpd": {
-        "format": "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{elapsedTime:%M:%S}/{totalTime:%M:%S}",
-        "format-disconnected": "Disconnected ",
-        "format-stopped": "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped ",
-        "unknown-tag": "N/A",
-        "interval": 2,
-        "consume-icons": {
-            "on": " "
+    "custom/mpris-media": {
+        "format": "{icon}{}",
+        "return-type": "json",
+        "format-icons": {
+          "Paused": " ",
+          "Playing": " ",
+          "Stopped": "ﱢ ",
         },
-        "random-icons": {
-            "off": "<span color=\"#f53c3c\"></span> ",
-            "on": " "
-        },
-        "repeat-icons": {
-            "on": " "
-        },
-        "single-icons": {
-            "on": "1 "
-        },
-        "state-icons": {
-            "paused": "",
-            "playing": ""
-        },
-        "tooltip-format": "MPD (connected)",
-        "tooltip-format-disconnected": "MPD (disconnected)",
-        "max-length": 30,
-        "on-click": "mpc toggle",
-        "on-scroll-up": "mpc next",
-        "on-scroll-down": "mpc prev",
-        "on-click-middle": "mpc random",
-        "on-click-right": "mpc stop",
+        "max-length":25,
+        "exec": "playerctl2 metadata --format '{\"text\": \"{{title}} \", \"tooltip\": \"{{playerName}} : {{artist}} - {{album}} - {{title}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}'",
+        "interval": 1,
+        "on-click": "playerctl2 play-pause",
+        "on-scroll-up": "playerctl2 previous",
+        "on-scroll-down": "playerctl2 next",
+        "on-click-middle": "playerctl2 loop track",
+        "on-click-right": "playerctl2 loop none",
+        "escape": true
     },
 }
